@@ -90,7 +90,7 @@ public class List<ContentType> {
      */
     public boolean isEmpty() {
         //TODO 01a: Die Liste ist leer, wenn es kein erstes Element gibt.
-        return false;
+        return first == null;
     }
 
     /**
@@ -101,7 +101,7 @@ public class List<ContentType> {
      */
     public boolean hasAccess() {
         //TODO 01b: Es gibt keinen Zugriff, wenn current auf kein Element verweist.
-        return false;
+        return current != null;
     }
 
     /**
@@ -113,6 +113,9 @@ public class List<ContentType> {
      */
     public void next() {
         //TODO 01c: Wechsel auf die nächste Node
+        if (hasAccess()) {
+            current = current.getNextNode();
+        }
     }
 
     /**
@@ -121,6 +124,7 @@ public class List<ContentType> {
      */
     public void toFirst() {
         //TODO 01d: Sprung zur ersten Node
+        current = first;
     }
 
     /**
@@ -129,6 +133,7 @@ public class List<ContentType> {
      */
     public void toLast() {
         //TODO 01e: Sprung auf die letzte Node
+        current = last;
     }
 
     /**
@@ -140,6 +145,9 @@ public class List<ContentType> {
      *         kein aktuelles Objekt gibt
      */
     public ContentType getContent() {
+        if (hasAccess()){
+            return current.getContentObject();
+        }
         return null;
     }
 
@@ -154,6 +162,7 @@ public class List<ContentType> {
     public void setContent(ContentType pContent) {
         // Nichts tun, wenn es keinen Inhalt oder kein aktuelles Element gibt.
         //TODO 01f: Inhaltsobjekt ersetzen
+        if (pContent != null && hasAccess()) current.setContentObject(pContent);
     }
 
     /**
@@ -170,6 +179,21 @@ public class List<ContentType> {
      */
     public void insert(ContentType pContent) {
         //TODO 01g: Inhaltsobjekt einfügen
+        if (pContent != null) {
+            ListNode nn = new ListNode(pContent);
+            if (hasAccess()) {
+                ListNode gP = getPrevious(current);
+                if (gP != null) {
+                    gP.setNextNode(nn);
+                } else {
+                    first = nn;
+                }
+                nn.setNextNode(current);
+            } else if (isEmpty()){
+                first = nn;
+                last = nn;
+            }
+        }
     }
 
     /**
@@ -184,6 +208,12 @@ public class List<ContentType> {
      */
     public void append(ContentType pContent) {
         //TODO 01h: Inhaltsobjekt anhängen
+        if (pContent!= null) {
+            ListNode newNode = new ListNode(pContent);
+            if (!isEmpty()) last.setNextNode(newNode);
+            else first = newNode;
+            last = newNode;
+        }
     }
 
     /**
@@ -198,6 +228,15 @@ public class List<ContentType> {
      */
     public void concat(List<ContentType> pList) {
         //TODO 01i: eine Liste an eine andere anhängen
+        if (pList != this && pList!= null && !pList.isEmpty()){
+            if (this.isEmpty()){
+                this.first = pList.first;
+            }else {
+                last.setNextNode(pList.first);
+            }
+            last = pList.last;
+            pList.first = pList.last = pList.current = null;
+        }
     }
 
     /**
@@ -212,6 +251,19 @@ public class List<ContentType> {
     public void remove() {
         // Nichts tun, wenn es kein aktuelles Element gibt oder die Liste leer ist.
         //TODO 01j: eine Node samt Inhaltsobjekt entfernen
+        if (!isEmpty() && hasAccess()){
+            if (current != first) {
+                getPrevious(current).setNextNode(current.getNextNode());
+            } else if (current == last){
+                last = getPrevious(last);
+            }else {
+                if (last == first){
+                    last = null;
+                }
+                first = first.getNextNode();
+            }
+            current = current.getNextNode();
+        }
     }
 
     /**
@@ -227,7 +279,14 @@ public class List<ContentType> {
      */
     private ListNode getPrevious(ListNode pNode) {
         //TODO 01k: Vorgänger-Node der aktuellen Node liefern.
+
+        if (isEmpty() || pNode == null || first == pNode) return null;
+
+        ListNode output = first;
+        while (output != null){
+            if (output.getNextNode() == pNode) return output;
+            output = output.getNextNode();
+        }
         return null;
     }
-
 }

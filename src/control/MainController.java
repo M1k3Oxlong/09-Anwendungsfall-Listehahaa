@@ -23,9 +23,26 @@ public class MainController {
      * @return String-Array mit den Familiennamen
      */
     public String[] showShelfContent(int index){
-        List<File> list = allShelves[index];
-        //TODO 03: Ausgabe der Inhalte
-        return new String[]{"Platzhalter00", "Platzhalter01", "Platzhalter02"};
+        if (0<= index && index < allShelves.length) {
+            List<File> list = allShelves[index];
+            //TODO 03: Ausgabe der Inhalte
+            list.toFirst();
+            int counter = 0;
+            while (list.hasAccess()) {
+                list.next();
+                counter++;
+            }
+            list.toFirst();
+            if (counter > 0) {
+                String[] files = new String[counter];
+                for (int i = 0; i < counter; i++) {
+                    files[i] = "Name: " + list.getContent().getName();
+                    list.next();
+                }
+                return files;
+            }
+        }
+        return new String[] {"Keine Daten vorhanden"};
     }
 
     /**
@@ -35,6 +52,7 @@ public class MainController {
      */
     public boolean sort(int index){
         //TODO 07: Sortieren einer Liste.
+
         return false;
     }
 
@@ -46,6 +64,10 @@ public class MainController {
      */
     public boolean appendFromTo(int from, int to){
         //TODO 04: Die Objekte einer Liste an eine andere anhängen und dabei die erste Liste leeren.
+        if (from >= 0 && from < allShelves.length && to >= 0 && to < allShelves.length){
+            allShelves[to].concat(allShelves[from]);
+            return true;
+        }
         return false;
     }
 
@@ -58,6 +80,11 @@ public class MainController {
      */
     public boolean appendANewFile(int index, String name, String phoneNumber){
         //TODO 02: Hinzufügen einer neuen Akte am Ende der Liste.
+        if (0 <= index && index < allShelves.length) {
+            File newFile = new File(name, phoneNumber);
+            allShelves[index].append(newFile);
+            return true;
+        }
         return false;
     }
 
@@ -80,6 +107,17 @@ public class MainController {
      */
     public int[] search(String name){
         //TODO 05: Suchen in einer Liste.
+        for(int i = 0; i < allShelves.length; i++){
+            int counter = 0;
+            allShelves[i].toFirst();
+            while(allShelves[i].hasAccess()){
+                if(allShelves[i].getContent().getName().equals(name)){
+                    return new int[]{i, counter};
+                }
+                allShelves[i].next();
+                counter ++;
+            }
+        }
         return new int[]{-1,-1};
     }
 
