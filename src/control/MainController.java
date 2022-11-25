@@ -52,7 +52,46 @@ public class MainController {
      */
     public boolean sort(int index){
         //TODO 07: Sortieren einer Liste.
+        /*if (0<= index && index < allShelves.length) {
+            List<File> helpList = new List<>();
+            while (!allShelves[index].isEmpty()) {
+                allShelves[index].toFirst();
+                File tmp = allShelves[index].getContent();
+                allShelves[index].next();
+                while(allShelves[index].hasAccess()){
+                    if(tmp.getName().compareTo(allShelves[index].getContent().getName()) > 0 ){ // tmp kommt später im Alphabet
+                        tmp = allShelves[index].getContent();
+                    }
+                    allShelves[index].next();
+                }
+                allShelves[index].toFirst();
+                while(allShelves[index].getContent() != tmp){
+                    allShelves[index].next();
+                }
+                allShelves[index].remove();
+                helpList.append(tmp);
 
+            }
+            allShelves[index].concat(helpList);
+            return true;
+        }
+        return false;*/
+        if (0 <= index && index < allShelves.length) {
+            List<File> helpList = new List<>();
+            allShelves[index].toFirst();
+            File tmp = allShelves[index].getContent();
+            helpList.append(tmp);
+            allShelves[index].remove();
+
+            while(!allShelves[index].isEmpty()){
+                tmp = allShelves[index].getContent();
+                helpList.toFirst();
+                while(helpList.hasAccess() && tmp.getName().compareTo(helpList.getContent().getName()) > 0){
+                    helpList.next();
+                }
+
+            }
+        }
         return false;
     }
 
@@ -97,6 +136,10 @@ public class MainController {
      */
     public boolean insertANewFile(int index, String name, String phoneNumber){
         //TODO 08: Einfügen einer neuen Akte an die richtige Stelle innerhalb der Liste.
+        if (0 <= index && index < allShelves.length) {
+
+            return true;
+        }
         return false;
     }
 
@@ -127,11 +170,25 @@ public class MainController {
      * @param fileIndex Aktennummer, die entfernt werden soll.
      * @return String-Array der Länge 2. Index 0 = Name, Indedx 1 = Telefonnummer.
      */
-    public String[] remove(int shelfIndex, int fileIndex){
+    public String[] remove(int shelfIndex, int fileIndex) {
         //TODO 06: Entfernen aus einer Liste.
-        return new String[]{"Nicht vorhanden","Nicht vorhanden"};
-    }
+        if (shelfIndex >=0 && shelfIndex < allShelves.length) {
+            int j = 0;
+            allShelves[shelfIndex].toFirst();
+            while (allShelves[shelfIndex].hasAccess()) {
+                if (j == fileIndex) {
+                    File f = allShelves[shelfIndex].getContent();
+                    allShelves[shelfIndex].remove();
+                    return new String[]{f.getName(), f.getPhoneNumber()};
+                }
+                File f = allShelves[shelfIndex].getContent();
+                allShelves[shelfIndex].next();
+                j++;
+            }
 
+        }
+        return new String[]{"Nicht vorhanden", "Nicht vorhanden"};
+    }
     /**
      * Es werden 14 zufällige Akten angelegt und zufällig den Regalen hinzugefügt.
      */

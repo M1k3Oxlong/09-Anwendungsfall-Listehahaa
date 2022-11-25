@@ -234,7 +234,7 @@ public class List<ContentType> {
             }else {
                 last.setNextNode(pList.first);
             }
-            last = pList.last;
+            this.last = pList.last;
             pList.first = pList.last = pList.current = null;
         }
     }
@@ -251,20 +251,25 @@ public class List<ContentType> {
     public void remove() {
         // Nichts tun, wenn es kein aktuelles Element gibt oder die Liste leer ist.
         //TODO 01j: eine Node samt Inhaltsobjekt entfernen
-        if (!isEmpty() && hasAccess()){
+        if (hasAccess()) {
             if (current != first) {
-                getPrevious(current).setNextNode(current.getNextNode());
-            } else if (current == last){
-                last = getPrevious(last);
-            }else {
-                if (last == first){
+                if (current == last) {
+                    last = getPrevious(last);
+                    last.setNextNode(null);
+                } else {
+                    getPrevious(current).setNextNode(current.getNextNode());
+                }
+            } else {
+                if (last == first) {
                     last = null;
                 }
                 first = first.getNextNode();
             }
             current = current.getNextNode();
         }
+
     }
+
 
     /**
      * Liefert den Vorgaengerknoten des Knotens pNode. Ist die Liste leer, pNode
